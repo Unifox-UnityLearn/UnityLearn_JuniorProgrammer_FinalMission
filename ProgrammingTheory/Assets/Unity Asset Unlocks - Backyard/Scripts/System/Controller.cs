@@ -10,6 +10,37 @@ public class Controller : MonoBehaviour
     public static Controller Instance { get; protected set; }
     public Camera MainCamera;
     public Transform CameraPosition;
+
+    //REMOVE LATER! FOR TESTING ONLY!
+    public Animal testingAnimal;
+
+    // ENCASULATION: ensure that animal can only be set if its not already, or only be cleared if it is set
+    bool isAnimalSet;
+    private Animal m_SelectedAnimal;
+    public Animal SelectedAnimal 
+    {
+        get { return m_SelectedAnimal; }
+        set 
+        {
+            if (value == null)
+            {
+                m_SelectedAnimal = null;
+                isAnimalSet = false;
+            }
+            else if (!isAnimalSet)
+            {
+                m_SelectedAnimal = value;
+                isAnimalSet = true;
+                m_SelectedAnimal.gameObject.transform.SetParent(CameraPosition.parent, false);
+                m_SelectedAnimal.gameObject.transform.localPosition = new(0, -0.95f, 0);
+                m_SelectedAnimal.gameObject.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                Debug.LogError("Animal is already set, please clear before setting another!");
+            }
+        }
+    }
         
     [Header("Control Settings")]
     public float MouseSensitivity = 100.0f;
@@ -43,12 +74,18 @@ public class Controller : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
+        //REMOVE LATER! FOR TESTING ONLY!
+        SelectedAnimal = testingAnimal;
+
         m_IsPaused = false;
         m_Grounded = true;
-        
+        SelectedAnimal.isOnGround = m_Grounded;
+
         MainCamera.transform.SetParent(CameraPosition, false);
-        MainCamera.transform.localPosition = Vector3.zero;
+        MainCamera.transform.localPosition = SelectedAnimal.camPos;
         MainCamera.transform.localRotation = Quaternion.identity;
+        CameraPosition.localPosition = SelectedAnimal.characterPos;
+        CameraPosition.rotation = Quaternion.Euler(SelectedAnimal.transform.rotation.eulerAngles + SelectedAnimal.camDir);
         m_CharacterController = GetComponent<CharacterController>();
 
         m_VerticalAngle = 0.0f;
@@ -69,6 +106,7 @@ public class Controller : MonoBehaviour
                 {
                     loosedGrounding = true;
                     m_Grounded = false;
+                    SelectedAnimal.isOnGround = m_Grounded;
                 }
             }
         }
@@ -76,6 +114,7 @@ public class Controller : MonoBehaviour
         {
             m_GroundedTimer = 0.0f;
             m_Grounded = true;
+            SelectedAnimal.isOnGround = m_Grounded;
         }
 
         Speed = 0;
@@ -87,6 +126,7 @@ public class Controller : MonoBehaviour
             {
                 m_VerticalSpeed = JumpSpeed;
                 m_Grounded = false;
+                SelectedAnimal.isOnGround = m_Grounded;
                 loosedGrounding = true;
             }
             
@@ -148,4 +188,5 @@ public class Controller : MonoBehaviour
         Cursor.lockState = display ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = display;
     }
+
 }
