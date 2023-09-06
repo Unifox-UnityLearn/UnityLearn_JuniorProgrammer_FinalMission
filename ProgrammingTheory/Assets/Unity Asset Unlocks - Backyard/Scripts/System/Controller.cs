@@ -43,7 +43,7 @@ public class Controller : MonoBehaviour
     }
         
     [Header("Control Settings")]
-    public float MouseSensitivity = 100.0f;
+    public float MouseSensitivity = 10.0f;
     public float PlayerSpeed = 5.0f;
     public float RunningSpeed = 7.0f;
     public float JumpSpeed = 5.0f;
@@ -51,7 +51,7 @@ public class Controller : MonoBehaviour
     float m_VerticalSpeed = 0.0f;
     bool m_IsPaused = false;
     
-    float m_VerticalAngle, m_HorizontalAngle;
+    float m_VerticalAngle, m_HorizontalAngle, m_HorizontalCamAngle;
     public float Speed { get; private set; } = 0.0f;
 
     public bool LockControl { get; set; }
@@ -139,7 +139,7 @@ public class Controller : MonoBehaviour
             }
 
             // Move around with WASD
-            move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            move = new Vector3( 0, 0, Input.GetAxisRaw("Vertical"));
             if (move.sqrMagnitude > 1.0f)
                 move.Normalize();
 
@@ -151,7 +151,7 @@ public class Controller : MonoBehaviour
             m_CharacterController.Move(move);
             
             // Turn player
-            float turnPlayer =  Input.GetAxis("Mouse X") * MouseSensitivity;
+            float turnPlayer =  Input.GetAxis("Horizontal") * 0.5f;
             m_HorizontalAngle = m_HorizontalAngle + turnPlayer;
 
             if (m_HorizontalAngle > 360) m_HorizontalAngle -= 360.0f;
@@ -163,13 +163,18 @@ public class Controller : MonoBehaviour
 
             // Camera look up/down
             var turnCam = -Input.GetAxis("Mouse Y");
+            var turnCam2 = Input.GetAxis("Mouse X");
             turnCam = turnCam * MouseSensitivity;
+            turnCam2 = turnCam2 * MouseSensitivity;
             m_VerticalAngle = Mathf.Clamp(turnCam + m_VerticalAngle, -89.0f, 89.0f);
+            m_HorizontalCamAngle = Mathf.Clamp(turnCam2 + m_HorizontalCamAngle, -89.0f, 89.0f);
             currentAngles = CameraPosition.transform.localEulerAngles;
             currentAngles.x = m_VerticalAngle;
+            currentAngles.y = m_HorizontalCamAngle;
             CameraPosition.transform.localEulerAngles = currentAngles;
   
             Speed = move.magnitude / (PlayerSpeed * Time.deltaTime);
+            SelectedAnimal.Move(Speed, turnPlayer);
         }
 
         // Fall down / gravity

@@ -30,10 +30,8 @@ public class Animal : MonoBehaviour
     public virtual void Move(float forward, float turn)
     {
         int run = isRunning ? 2 : 1;
-        float forwardSpeed = forward * runSpeed * run * Time.deltaTime;
-        float turnAmount = turn * turnSpeed * Time.deltaTime;
-        transform.Translate(0, 0, forwardSpeed);
-        transform.Rotate(0, turnAmount, 0);
+        float forwardSpeed = forward * run;
+        float turnAmount = turn;
         animator.SetFloat("forwardSpeed", forwardSpeed);
         animator.SetFloat("turnSpeed", turnAmount);
     }
