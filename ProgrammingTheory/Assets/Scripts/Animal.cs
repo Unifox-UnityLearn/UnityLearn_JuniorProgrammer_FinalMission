@@ -18,17 +18,21 @@ public class Animal : MonoBehaviour
     [SerializeField]
     protected float turnSpeed = 10;
 
+    public Vector3 characterPos { get { return m_characterPos; } protected set { m_characterPos = value; } }
     [SerializeField]
-    public Vector3 characterPos { get; protected set; } = new();
+    private Vector3 m_characterPos;
+    public Vector3 camPos { get { return m_camPos; } protected set { m_camPos = value; } }
     [SerializeField]
-    public Vector3 camPos { get; protected set; } = new();
+    private Vector3 m_camPos;
+    public Vector3 camDir { get { return m_camDir; } protected set { m_camDir = value; } }
     [SerializeField]
-    public Vector3 camDir { get; protected set; } = new();
+    private Vector3 m_camDir;
 
     [SerializeField]
     private AudioSource animalVoiceShort;
     [SerializeField]
     private AudioSource animalVoiceHold;
+    [SerializeField]
     private Animator animator;
 
     public virtual void Move(float forward, float turn)

@@ -11,12 +11,10 @@ public class Controller : MonoBehaviour
     public Camera MainCamera;
     public Transform CameraPosition;
 
-    //REMOVE LATER! FOR TESTING ONLY!
-    public Animal testingAnimal;
-
     // ENCAPSULATION: ensure that animal can only be set if its not already, or only be cleared if it is set
     #region ENCAPSULATION
     bool isAnimalSet;
+    [SerializeField]
     private Animal m_SelectedAnimal;
     public Animal SelectedAnimal 
     {
@@ -43,6 +41,9 @@ public class Controller : MonoBehaviour
         }
     }
     #endregion
+
+    [SerializeField]
+    private GameObject animal;
 
     [Header("Control Settings")]
     public float MouseSensitivity = 10.0f;
@@ -76,8 +77,8 @@ public class Controller : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
-        //REMOVE LATER! FOR TESTING ONLY!
-        SelectedAnimal = testingAnimal;
+        animal = Instantiate(MainManager.Instance.Animal);
+        SelectedAnimal = animal.GetComponent<Animal>();
 
         m_IsPaused = false;
         m_Grounded = true;
