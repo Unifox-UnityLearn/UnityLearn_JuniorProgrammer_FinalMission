@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE: this is the base animal class that specific animals derive from
 public class Animal : MonoBehaviour
 {
     //only used for singleton, making sure there's only one animal in the scene
@@ -11,7 +12,7 @@ public class Animal : MonoBehaviour
     public bool isOnGround = false;
 
     [SerializeField]
-    protected float jumpHeight = 0f;
+    public float jumpHeight { get; protected set; } = 0f;
     [SerializeField]
     protected float runSpeed = 10;
     [SerializeField]
@@ -24,7 +25,10 @@ public class Animal : MonoBehaviour
     [SerializeField]
     public Vector3 camDir { get; protected set; } = new();
 
-    private AudioSource animalVoice;
+    [SerializeField]
+    private AudioSource animalVoiceShort;
+    [SerializeField]
+    private AudioSource animalVoiceHold;
     private Animator animator;
 
     public virtual void Move(float forward, float turn)
@@ -36,9 +40,22 @@ public class Animal : MonoBehaviour
         animator.SetFloat("turnSpeed", turnAmount);
     }
 
-    public virtual void Speak()
+    public virtual void SpeakShort()
     {
-        animalVoice.Play();
+        animalVoiceShort.Play();
+    }
+
+    public virtual void SpeakHold()
+    {
+        if (!animalVoiceHold.isPlaying)
+        {
+            animalVoiceHold.Play();
+        }
+    }
+
+    public virtual void SpeakStop()
+    {
+        animalVoiceHold.Stop();
     }
 
     protected virtual void Start() 
@@ -52,7 +69,6 @@ public class Animal : MonoBehaviour
         }
 
         Instance = this;
-        animalVoice = GetComponent<AudioSource>(); 
         animator = GetComponent<Animator>();
     }
 

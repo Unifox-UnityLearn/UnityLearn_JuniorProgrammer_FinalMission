@@ -5,10 +5,11 @@ using UnityEngine;
 // INHERITANCE: it inherits from the base animal
 public class Fox : Animal
 {
+    // POLYMORPHISM: overriding the base start method, to set variables to values specific to this animal
     protected override void Start()
     {
         base.Start();
-        jumpHeight = 30;
+        jumpHeight = 5;
         runSpeed = 40;
         turnSpeed = 20;
 
